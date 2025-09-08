@@ -5,10 +5,25 @@ const rootFolder = __dirname;
 const supportedExtensions = [".jpg", ".jpeg", ".png", ".gif", ".webp", ".bmp"];
 
 function generateHTML(folderPath, relativePath, images, subfolders) {
-  const accentColor = "#0cf";
-  const accentColorHover = "#00a3ccff";
-  const bgColor = "#111";
-  const textColor = "#fff";
+  let tempAccentColor, tempAccentColorHover, tempBgColor, tempTextColor;
+
+  if (fs.existsSync("theme.json")) {
+    const theme = JSON.parse(fs.readFileSync("theme.json", "utf-8"));
+    tempAccentColor = theme.accentColor || "#0cf";
+    tempAccentColorHover = theme.accentColorHover || "#00a3ccff";
+    tempBgColor = theme.bgColor || "#111";
+    tempTextColor = theme.textColor || "#fff";
+  } else {
+    tempAccentColor = "#0cf";
+    tempAccentColorHover = "#00a3ccff";
+    tempBgColor = "#111";
+    tempTextColor = "#fff";
+  }
+
+  const accentColor = tempAccentColor;
+  const accentColorHover = tempAccentColorHover;
+  const bgColor = tempBgColor;
+  const textColor = tempTextColor;
 
   const backLink = relativePath ? `<a href="../index.html">⬅ Back</a>` : "";
   const folderLinks = subfolders
