@@ -240,12 +240,13 @@ ${
 
   let currentIndex = -1;
   let hasRenderedQueue = false;
+  let toggledQueue = false;
 
   function addToQueue(event, src) {
     event.stopPropagation(); // Prevent triggering the image click event
     if (!queue.includes(src)) {
       queue.push(src);
-      renderQueue();
+      if (toggledQueue) renderQueue();
     }
   }
 
@@ -294,9 +295,19 @@ ${
   });
 
   function toggleQueue() {
+    toggledQueue = !toggledQueue;
+    if (!hasRenderedQueue) {
+      queuePanel.id = "queuePanel";
+      queuePanelPlaceholder.appendChild(queuePanel);
+      hasRenderedQueue = true;
+    }
     const panel = document.getElementById("queuePanel");
-    panel.style.display = panel.style.display === "none" ? "block" : "none";
-    renderQueue();
+    if (toggledQueue) {
+      panel.style.display = "block";
+      renderQueue();
+    } else {
+      panel.style.display = "none";
+    }
   }
 
   function clearQueue() {
@@ -308,11 +319,6 @@ ${
 
   function renderQueue() {
     const panel = document.getElementById("queuePanel");
-    if (!hasRenderedQueue) {
-      queuePanel.id = "queuePanel";
-      queuePanelPlaceholder.appendChild(queuePanel);
-      hasRenderedQueue = true;
-    }
     panel.innerHTML = queue.map((src, i) => {
       return '<img src="' + src + '" style="height:60px; margin:5px; border:' + (i === currentIndex ? '3px solid #0cf' : '1px solid #666') + '; border-radius:5px; cursor:pointer;" onclick="showFromQueue(' + i + ')">';
     }).join("");
